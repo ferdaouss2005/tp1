@@ -1,1 +1,4 @@
 # tp1
+exercice 1
+<img width="475" height="273" alt="image" src="https://github.com/user-attachments/assets/fc75c671-4fc8-4bdc-b140-53052b59269a" />
+Ce premier exercice consiste à créer une classe Etudiant en C++ en appliquant le principe d'encapsulation. Les attributs sont déclarés en private et manipulés à travers des getters et des setters avec validation des notes (entre 0 et 20). La classe contient également deux constructeurs et une méthode calculerMoyenne() pour calculer la moyenne des trois notes. Un programme principal permet de tester les différentes fonctionnalités.
