@@ -1,0 +1,169 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Declaration de la classe Filiere
+class Filiere;
+
+// Classe Etudiant
+class Etudiant {
+private:
+    string nom;
+    string cin;
+    float note1;
+    float note2;
+    float note3;
+    Filiere* filiere;
+
+public:
+    // Constructeur
+    Etudiant(string n, string c, float n1, float n2, float n3) {
+        nom = n;
+        cin = c;
+        note1 = n1;
+        note2 = n2;
+        note3 = n3;
+        filiere = NULL;
+    }
+
+    // Getters
+    string getNom() const {
+        return nom;
+    }
+
+    string getCin() const {
+        return cin;
+    }
+
+    float calculerMoyenne() const {
+        return (note1 + note2 + note3) / 3;
+    }
+
+    Filiere* getFiliere() const {
+        return filiere;
+    }
+
+    // Setter
+    void setFiliere(Filiere* f) {
+        filiere = f;
+    }
+};
+
+// Classe Filiere
+class Filiere {
+private:
+    string nom;
+    vector<Etudiant*> etudiants;
+
+public:
+    // Constructeur
+    Filiere(string n) {
+        nom = n;
+    }
+
+    // Inscrire un etudiant
+    void inscrireEtudiant(Etudiant* e) {
+        if (e == NULL) {
+            return;
+        }
+
+        // Eviter les doublons
+        if (find(etudiants.begin(), etudiants.end(), e)
+            != etudiants.end()) {
+            return;
+        }
+
+        // Retirer l'etudiant de son ancienne filiere
+        if (e->getFiliere() != NULL) {
+            e->getFiliere()->retirerEtudiant(e);
+        }
+
+        etudiants.push_back(e);
+        e->setFiliere(this);
+    }
+
+    // Retirer un etudiant
+    void retirerEtudiant(Etudiant* e) {
+        vector<Etudiant*>::iterator it;
+
+        it = find(etudiants.begin(), etudiants.end(), e);
+
+        if (it != etudiants.end()) {
+            etudiants.erase(it);
+            e->setFiliere(NULL);
+        }
+    }
+
+    // Retourner le nombre d'etudiants
+    int getNombreEtudiants() const {
+        return etudiants.size();
+    }
+
+    // Afficher tous les etudiants
+    void afficherTous() const {
+        cout << "Etudiants de la filiere "
+             << nom << ":" << endl;
+
+        for (int i = 0; i < etudiants.size(); i++) {
+            cout << " - " << etudiants[i]->getNom()
+                 << " (Moyenne: "
+                 << etudiants[i]->calculerMoyenne()
+                 << ")" << endl;
+        }
+    }
+
+    // Destructeur
+    ~Filiere() {
+        for (int i = 0; i < etudiants.size(); i++) {
+            etudiants[i]->setFiliere(NULL);
+            delete etudiants[i];
+        }
+
+        etudiants.clear();
+    }
+};
+
+// Programme principal
+int main() {
+
+    // Creation de la filiere
+    Filiere* f1 = new Filiere("Informatique");
+
+    // Creation des etudiants
+    Etudiant* e1 = new Etudiant("Alice", "123", 15, 16, 17);
+    Etudiant* e2 = new Etudiant("Bob", "456", 10, 12, 14);
+    Etudiant* e3 = new Etudiant("Charlie", "789", 18, 19, 20);
+
+    // Inscription des etudiants
+    f1->inscrireEtudiant(e1);
+    f1->inscrireEtudiant(e2);
+    f1->inscrireEtudiant(e3);
+
+    // Affichage des etudiants
+    cout << "===== LISTE DES ETUDIANTS =====" << endl;
+    f1->afficherTous();
+
+    // Affichage du nombre d'etudiants
+    cout << "\nNombre d'etudiants : "
+         << f1->getNombreEtudiants() << endl;
+
+    // Retrait de Bob
+    f1->retirerEtudiant(e2);
+
+    cout << "\n===== APRES RETRAIT DE BOB =====" << endl;
+    f1->afficherTous();
+
+    // Bob n'appartient plus a la filiere,
+    // on doit donc le supprimer separement.
+    delete e2;
+
+    // Suppression de la filiere
+    // Le destructeur supprime Alice et Charlie.
+    delete f1;
+
+    return 0;
+}
