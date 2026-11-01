@@ -9,3 +9,6 @@ Cet exercice consiste à réaliser une association bidirectionnelle entre les cl
 exercice 3
 <img width="460" height="301" alt="image" src="https://github.com/user-attachments/assets/9dabd94c-9908-4810-ad67-0a58f068a54c" />
 Dans cet exercice, j'ai réalisé une association 1 à N entre les classes `Etudiant` et `Filiere` en C++. Une filière peut contenir plusieurs étudiants grâce à l'utilisation de `vector`. J'ai également implémenté les méthodes permettant d'inscrire, de retirer et d'afficher les étudiants, ainsi que de compter leur nombre.
+exercice 4
+<img width="403" height="278" alt="image" src="https://github.com/user-attachments/assets/6d625a02-9307-4ebd-b607-c222636ad7ab" />
+Dans cet exercice, j'ai ajouté une méthode `changerDeFiliere()` permettant à un étudiant de changer de filière. Cette méthode assure la mise à jour des associations en retirant l'étudiant de son ancienne filière et en l'inscrivant dans la nouvelle, tout en maintenant la cohérence des données.
