@@ -1,0 +1,128 @@
+
+#include <iostream>
+#include <string>
+
+class Etudiant {
+private:
+    // Attributs
+    std::string nom;
+    std::string cin;
+    double note1;
+    double note2;
+    double note3;
+
+public:
+    // Constructeur par defaut
+    Etudiant() {
+        nom = "Inconnu";
+        cin = "000000000000000";
+        note1 = 0;
+        note2 = 0;
+        note3 = 0;
+    }
+
+    // Constructeur parametre
+    Etudiant(std::string n, std::string c,
+             double n1, double n2, double n3) {
+        nom = n;
+        cin = c;
+
+        setNote1(n1);
+        setNote2(n2);
+        setNote3(n3);
+    }
+
+    // Getters
+    std::string getNom() const {
+        return nom;
+    }
+
+    std::string getCin() const {
+        return cin;
+    }
+
+    double getNote1() const {
+        return note1;
+    }
+
+    double getNote2() const {
+        return note2;
+    }
+
+    double getNote3() const {
+        return note3;
+    }
+
+    // Setters
+    void setNom(std::string n) {
+        nom = n;
+    }
+
+    void setCin(std::string c) {
+        cin = c;
+    }
+
+    void setNote1(double n) {
+        if (n >= 0 && n <= 20) {
+            note1 = n;
+        } else {
+            std::cerr << "Note invalide : " << n << std::endl;
+        }
+    }
+
+    void setNote2(double n) {
+        if (n >= 0 && n <= 20) {
+            note2 = n;
+        } else {
+            std::cerr << "Note invalide : " << n << std::endl;
+        }
+    }
+
+    void setNote3(double n) {
+        if (n >= 0 && n <= 20) {
+            note3 = n;
+        } else {
+            std::cerr << "Note invalide : " << n << std::endl;
+        }
+    }
+
+    // Calcul de la moyenne
+    double calculerMoyenne() const {
+        return (note1 + note2 + note3) / 3.0;
+    }
+};
+
+// Programme principal
+int main() {
+
+    // Premier etudiant
+    Etudiant e1;
+
+    e1.setNom("Alice Dupont");
+    e1.setCin("123456789012345");
+    e1.setNote1(15.5);
+    e1.setNote2(12.0);
+    e1.setNote3(18.5);
+
+    std::cout << "Etudiant 1 : " << e1.getNom() << std::endl;
+    std::cout << "CIN : " << e1.getCin() << std::endl;
+    std::cout << "Moyenne : " << e1.calculerMoyenne() << std::endl;
+
+    // Test de validation
+    std::cout << "\nTest de validation :" << std::endl;
+
+    e1.setNote1(25.0);
+
+    std::cout << "Note1 apres tentative d'erreur : "
+              << e1.getNote1() << std::endl;
+
+    // Deuxieme etudiant
+    Etudiant e2("Bob Martin", "987654321098765",
+                10.0, 14.0, 16.0);
+
+    std::cout << "\nEtudiant 2 : " << e2.getNom() << std::endl;
+    std::cout << "CIN : " << e2.getCin() << std::endl;
+    std::cout << "Moyenne : " << e2.calculerMoyenne() << std::endl;
+
+    return 0;
+}
