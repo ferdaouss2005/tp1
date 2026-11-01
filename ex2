@@ -1,0 +1,116 @@
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Declaration de la classe Filiere
+class Filiere;
+
+// Classe Etudiant
+class Etudiant {
+private:
+    string nom;
+    string cin;
+    float note1;
+    float note2;
+    float note3;
+    Filiere* filiere;
+
+public:
+    // Constructeur
+    Etudiant(string n, string c, float n1, float n2, float n3) {
+        nom = n;
+        cin = c;
+        note1 = n1;
+        note2 = n2;
+        note3 = n3;
+        filiere = NULL;
+    }
+
+    // Getters
+    string getNom() const {
+        return nom;
+    }
+
+    string getCin() const {
+        return cin;
+    }
+
+    float calculerMoyenne() const {
+        return (note1 + note2 + note3) / 3;
+    }
+
+    Filiere* getFiliere() const {
+        return filiere;
+    }
+
+    // Setter
+    void setFiliere(Filiere* f) {
+        filiere = f;
+    }
+};
+
+// Classe Filiere
+class Filiere {
+private:
+    string nom;
+    Etudiant* etudiantInscrit;
+
+public:
+    // Constructeur
+    Filiere(string n) {
+        nom = n;
+        etudiantInscrit = NULL;
+    }
+
+    // Inscrire un etudiant
+    void inscrireEtudiant(Etudiant* e) {
+        if (e == NULL) {
+            return;
+        }
+
+        etudiantInscrit = e;
+        e->setFiliere(this);
+    }
+
+    // Getter
+    Etudiant* getEtudiant() const {
+        return etudiantInscrit;
+    }
+};
+
+// Programme principal
+int main() {
+
+    // Creation d'une filiere
+    Filiere* f1 = new Filiere("Informatique");
+
+    // Creation d'un etudiant
+    Etudiant* e1 = new Etudiant("Alice", "123", 15, 16, 17);
+
+    // Association entre Etudiant et Filiere
+    f1->inscrireEtudiant(e1);
+
+    // Affichage des informations
+    cout << "===== INFORMATIONS ETUDIANT =====" << endl;
+
+    cout << "Nom : " << e1->getNom() << endl;
+    cout << "CIN : " << e1->getCin() << endl;
+    cout << "Moyenne : " << e1->calculerMoyenne() << endl;
+
+    // Verification de l'association
+    if (e1->getFiliere() != NULL) {
+        cout << "L'etudiant est inscrit dans une filiere." << endl;
+    }
+
+    if (f1->getEtudiant() != NULL) {
+        cout << "La filiere contient un etudiant." << endl;
+    }
+
+    // Liberation de la memoire
+    delete e1;
+    delete f1;
+
+    return 0;
+}
