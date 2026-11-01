@@ -12,3 +12,8 @@ Dans cet exercice, j'ai réalisé une association 1 à N entre les classes `Etud
 exercice 4
 <img width="403" height="278" alt="image" src="https://github.com/user-attachments/assets/6d625a02-9307-4ebd-b607-c222636ad7ab" />
 Dans cet exercice, j'ai ajouté une méthode `changerDeFiliere()` permettant à un étudiant de changer de filière. Cette méthode assure la mise à jour des associations en retirant l'étudiant de son ancienne filière et en l'inscrivant dans la nouvelle, tout en maintenant la cohérence des données.
+
+exercice 5
+
+<img width="400" height="267" alt="image" src="https://github.com/user-attachments/assets/2bdf8499-32ed-4990-a254-22828d6e62f0" />
+Dans cet exercice, j'ai amélioré la robustesse de mon programme en ajoutant des vérifications pour éviter les pointeurs nuls, les inscriptions en double et les notes invalides. J'ai également utilisé les exceptions (throw, try et catch) pour gérer les erreurs et afficher des messages explicites.
