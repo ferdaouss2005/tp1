@@ -1,0 +1,187 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Declaration de la classe Filiere
+class Filiere;
+
+// Classe Etudiant
+class Etudiant {
+private:
+    string nom;
+    string cin;
+    float note1;
+    float note2;
+    float note3;
+    Filiere* filiere;
+
+public:
+    // Constructeur
+    Etudiant(string n, string c, float n1, float n2, float n3) {
+        nom = n;
+        cin = c;
+        note1 = n1;
+        note2 = n2;
+        note3 = n3;
+        filiere = NULL;
+    }
+
+    // Getters
+    string getNom() const {
+        return nom;
+    }
+
+    string getCin() const {
+        return cin;
+    }
+
+    float calculerMoyenne() const {
+        return (note1 + note2 + note3) / 3;
+    }
+
+    Filiere* getFiliere() const {
+        return filiere;
+    }
+
+    // Setter
+    void setFiliere(Filiere* f) {
+        filiere = f;
+    }
+
+    // Changer de filiere
+    void changerDeFiliere(Filiere* nouvelleFiliere);
+};
+
+// Classe Filiere
+class Filiere {
+private:
+    string nom;
+    vector<Etudiant*> etudiants;
+
+public:
+    // Constructeur
+    Filiere(string n) {
+        nom = n;
+    }
+
+    // Inscrire un etudiant
+    void inscrireEtudiant(Etudiant* e) {
+        if (e == NULL) {
+            return;
+        }
+
+        // Eviter les doublons
+        if (find(etudiants.begin(), etudiants.end(), e)
+            != etudiants.end()) {
+            return;
+        }
+
+        // Retirer l'etudiant de son ancienne filiere
+        if (e->getFiliere() != NULL) {
+            e->getFiliere()->retirerEtudiant(e);
+        }
+
+        etudiants.push_back(e);
+        e->setFiliere(this);
+    }
+
+    // Retirer un etudiant
+    void retirerEtudiant(Etudiant* e) {
+        vector<Etudiant*>::iterator it;
+
+        it = find(etudiants.begin(), etudiants.end(), e);
+
+        if (it != etudiants.end()) {
+            etudiants.erase(it);
+
+            if (e->getFiliere() == this) {
+                e->setFiliere(NULL);
+            }
+        }
+    }
+
+    // Afficher les etudiants
+    void afficherTous() const {
+        cout << "Etudiants de la filiere "
+             << nom << ":" << endl;
+
+        for (int i = 0; i < etudiants.size(); i++) {
+            cout << " - " << etudiants[i]->getNom()
+                 << " (Moyenne: "
+                 << etudiants[i]->calculerMoyenne()
+                 << ")" << endl;
+        }
+    }
+
+    // Destructeur
+    ~Filiere() {
+        for (int i = 0; i < etudiants.size(); i++) {
+            etudiants[i]->setFiliere(NULL);
+            delete etudiants[i];
+        }
+
+        etudiants.clear();
+    }
+};
+
+// Implementation de changerDeFiliere
+void Etudiant::changerDeFiliere(Filiere* nouvelleFiliere) {
+
+    if (nouvelleFiliere == NULL) {
+        cout << "Nouvelle filiere invalide." << endl;
+        return;
+    }
+
+    if (filiere == nouvelleFiliere) {
+        cout << "L'etudiant est deja inscrit dans cette filiere."
+             << endl;
+        return;
+    }
+
+    // Retirer l'etudiant de l'ancienne filiere
+    if (filiere != NULL) {
+        filiere->retirerEtudiant(this);
+    }
+
+    // Inscrire l'etudiant dans la nouvelle filiere
+    nouvelleFiliere->inscrireEtudiant(this);
+
+    cout << nom << " a change de filiere." << endl;
+}
+
+// Programme principal
+int main() {
+
+    // Creation de deux filieres
+    Filiere* f1 = new Filiere("Informatique");
+    Filiere* f2 = new Filiere("Mathematiques");
+
+    // Creation d'un etudiant
+    Etudiant* e1 = new Etudiant("Alice", "123", 15, 16, 17);
+
+    // Inscription initiale
+    f1->inscrireEtudiant(e1);
+
+    cout << "===== AVANT LE CHANGEMENT =====" << endl;
+    f1->afficherTous();
+    f2->afficherTous();
+
+    // Changement de filiere
+    e1->changerDeFiliere(f2);
+
+    cout << "\n===== APRES LE CHANGEMENT =====" << endl;
+    f1->afficherTous();
+    f2->afficherTous();
+
+    // Liberation de la memoire
+    // Alice est maintenant dans f2.
+    // Le destructeur de f2 supprimera Alice.
+    delete f1;
+    delete f2;
+
+    return 0;
+}
