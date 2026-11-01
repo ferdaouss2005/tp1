@@ -1,0 +1,186 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdexcept>
+
+using namespace std;
+
+// Declaration de la classe Filiere
+class Filiere;
+
+// Classe Etudiant
+class Etudiant {
+private:
+    string nom;
+    string cin;
+    float note1;
+    float note2;
+    float note3;
+    Filiere* filiere;
+
+public:
+    // Constructeur avec validation des notes
+    Etudiant(string n, string c, float n1, float n2, float n3) {
+        if (n1 < 0 || n1 > 20 ||
+            n2 < 0 || n2 > 20 ||
+            n3 < 0 || n3 > 20) {
+            throw invalid_argument("Notes invalides");
+        }
+
+        nom = n;
+        cin = c;
+        note1 = n1;
+        note2 = n2;
+        note3 = n3;
+        filiere = NULL;
+    }
+
+    // Getters
+    string getNom() const {
+        return nom;
+    }
+
+    string getCin() const {
+        return cin;
+    }
+
+    float calculerMoyenne() const {
+        return (note1 + note2 + note3) / 3;
+    }
+
+    Filiere* getFiliere() const {
+        return filiere;
+    }
+
+    // Setter
+    void setFiliere(Filiere* f) {
+        filiere = f;
+    }
+};
+
+// Classe Filiere
+class Filiere {
+private:
+    string nom;
+    vector<Etudiant*> etudiants;
+
+public:
+    // Constructeur
+    Filiere(string n) {
+        nom = n;
+    }
+
+    // Inscrire un etudiant avec gestion des erreurs
+    void inscrireEtudiant(Etudiant* e) {
+
+        // Verifier le pointeur nul
+        if (e == NULL) {
+            throw invalid_argument("Etudiant nul");
+        }
+
+        // Verifier les doublons
+        for (int i = 0; i < etudiants.size(); i++) {
+            if (etudiants[i] == e) {
+                throw runtime_error(
+                    "Etudiant deja inscrit dans cette filiere"
+                );
+            }
+        }
+
+        // Verifier si l'etudiant appartient a une autre filiere
+        if (e->getFiliere() != NULL) {
+            throw runtime_error(
+                "Etudiant deja inscrit dans une autre filiere"
+            );
+        }
+
+        // Inscription de l'etudiant
+        etudiants.push_back(e);
+        e->setFiliere(this);
+    }
+
+    // Afficher les etudiants
+    void afficherTous() const {
+        cout << "\nEtudiants de la filiere "
+             << nom << ":" << endl;
+
+        for (int i = 0; i < etudiants.size(); i++) {
+            cout << "- " << etudiants[i]->getNom()
+                 << " (Moyenne : "
+                 << etudiants[i]->calculerMoyenne()
+                 << ")" << endl;
+        }
+    }
+
+    // Nombre d'etudiants
+    int getNombreEtudiants() const {
+        return etudiants.size();
+    }
+
+    // Destructeur
+    ~Filiere() {
+        for (int i = 0; i < etudiants.size(); i++) {
+            etudiants[i]->setFiliere(NULL);
+            delete etudiants[i];
+        }
+
+        etudiants.clear();
+    }
+};
+
+// Programme principal
+int main() {
+
+    Filiere* f1 = new Filiere("Informatique");
+
+    Etudiant* e1 = NULL;
+
+    try {
+
+        // Creation d'un etudiant
+        e1 = new Etudiant("Alice", "123", 15, 16, 17);
+
+        // Test d'un pointeur nul
+        try {
+            f1->inscrireEtudiant(NULL);
+        }
+        catch (const exception& e) {
+            cout << "Erreur : " << e.what() << endl;
+        }
+
+        // Premiere inscription
+        f1->inscrireEtudiant(e1);
+
+        cout << "Alice inscrite avec succes." << endl;
+
+        // Test d'une inscription en double
+        try {
+            f1->inscrireEtudiant(e1);
+        }
+        catch (const exception& e) {
+            cout << "Erreur : " << e.what() << endl;
+        }
+
+        // Affichage
+        f1->afficherTous();
+
+        cout << "\nNombre d'etudiants : "
+             << f1->getNombreEtudiants() << endl;
+
+    }
+    catch (const exception& e) {
+        cout << "Erreur : " << e.what() << endl;
+    }
+
+    // Liberation de la memoire
+    // f1 supprime Alice si elle est inscrite.
+    // Sinon, on supprime Alice directement.
+    if (e1 != NULL && e1->getFiliere() == NULL) {
+        delete e1;
+    }
+
+    delete f1;
+
+    return 0;
+}
